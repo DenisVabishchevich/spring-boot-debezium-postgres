@@ -23,6 +23,8 @@ services:
       - "listen_addresses=*"
     volumes:
       - db:/var/lib/postgresql/data
+    networks:
+      - kafka-postgres
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -31,6 +33,8 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "22181:2181"
+    networks:
+      - kafka-postgres
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -46,43 +50,13 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: '1'
       KAFKA_MIN_INSYNC_REPLICAS: '1'
-
-  init-kafka:
-    image: confluentinc/cp-kafka:latest
-    depends_on:
-      - kafka
-    entrypoint: [ '/bin/sh', '-c' ]
-    command: |
-      "
-      sleep 15 && kafka-topics --bootstrap-server kafka:9092 --list
-      
-      echo -e 'Creating kafka topics'
-      kafka-topics --create --topic orders-in --bootstrap-server kafka:9092
-      kafka-topics --create --topic orders-out --bootstrap-server kafka:9092
-      
-      echo -e 'Successfully created the following topics:'
-      kafka-topics --bootstrap-server kafka:9092 --list
-      "
-
-  send-kafka:
-    image: confluentinc/cp-kafkacat
-    depends_on:
-      - init-kafka
-    entrypoint: [ '/bin/sh', '-c' ]
-    command: |
-      "
-      echo '{\"status\":\"VALIDATED\"}' | kafkacat -P -b kafka:9092 -H id=$$(uuidgen) -H "type=CREATE_ORDER" -t orders-in -P
-      "
-  recieve-kafka:
-    image: confluentinc/cp-kafkacat
-    depends_on:
-      - init-kafka
-    entrypoint: [ '/bin/sh', '-c' ]
-    command: |
-      "
-      kafkacat -b localhost:9092 -t orders-out -C -c1
-      "
+    networks:
+      - kafka-postgres
 
 volumes:
   db:
     driver: local
+
+networks:
+  kafka-postgres:
+    name: kafka-postgres

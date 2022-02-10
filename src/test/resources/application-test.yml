@@ -1,15 +1,3 @@
-spring:
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-    database: H2
-  datasource:
-    url: jdbc:h2:mem:testdb;MODE=PostgreSQL
-    username: root
-    password: root
-    driverClassName: org.h2.Driver
-
 logging:
   level:
     org:
