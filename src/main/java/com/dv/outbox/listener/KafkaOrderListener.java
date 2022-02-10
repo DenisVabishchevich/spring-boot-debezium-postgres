@@ -49,7 +49,7 @@ public class KafkaOrderListener {
                 if (eventType.equalsIgnoreCase(OrderEventType.CREATE_ORDER.name())) {
                     OrderDto orderDto = mapper.readValue(message, OrderDto.class);
                     Order order = orderService.saveOrder(orderDto);
-                    OrderEvent orderCreated = order.created("Order", order.getId().toString());
+                    OrderEvent orderCreated = order.created("aggregateId");
                     orderEventService.save(orderCreated);
                 } else {
                     throw new RuntimeException("Event type not supported: " + eventType);

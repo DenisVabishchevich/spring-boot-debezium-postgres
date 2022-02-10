@@ -39,9 +39,9 @@ public class Order {
     private OrderStatus status;
 
     @SneakyThrows
-    public OrderEvent created(String aggregateType, String aggregateId) {
+    public OrderEvent created(String aggregateId) {
         return OrderEvent.builder()
-            .aggregateType(aggregateType)
+            .aggregateType("Order")
             .aggregateId(aggregateId)
             .type(OrderEventType.CREATE_ORDER.name())
             .payload(mapper.writeValueAsString(this))

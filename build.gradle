@@ -20,16 +20,15 @@ dependencies {
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.modelmapper:modelmapper:3.0.0'
-	implementation 'io.debezium:debezium-embedded:1.8.0.Final'
+	implementation('io.debezium:debezium-embedded:1.8.0.Final') {
+		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+	}
 	implementation 'io.debezium:debezium-connector-postgres:1.8.0.Final'
 	implementation 'io.debezium:debezium-api:1.8.0.Final'
 	implementation 'org.apache.commons:commons-lang3'
 	runtimeOnly 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-
-	testImplementation "org.testcontainers:testcontainers:1.16.3"
-	testImplementation "org.testcontainers:junit-jupiter:1.16.3"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

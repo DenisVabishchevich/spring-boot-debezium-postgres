@@ -23,7 +23,7 @@ public class DebeziumConfig {
 
     @Bean(destroyMethod = "close")
     DebeziumEngine<RecordChangeEvent<SourceRecord>> engine(io.debezium.config.Configuration customerConnector,
-                                                                   DebeziumListener debeziumListener) {
+                                                           DebeziumListener debeziumListener) {
         DebeziumEngine<RecordChangeEvent<SourceRecord>> engine = DebeziumEngine.create(ChangeEventFormat.of(Connect.class))
             .using(customerConnector.asProperties())
             .notifying(debeziumListener)
@@ -38,18 +38,26 @@ public class DebeziumConfig {
     public io.debezium.config.Configuration customerConnector(DataSourceProperties dataSource) {
         URI uri = URI.create(dataSource.getUrl().substring(5));
         return io.debezium.config.Configuration.create()
-            .with("connector.class", "io.debezium.connector.postgresql.PostgresConnector")
-            .with("offset.storage.file.filename", "/tmp/offsets.dat")
-            .with("offset.flush.interval.ms", 60000)
             .with("name", "orders-postgres-connector")
-            .with("database.server.name", uri.getHost() + "-test")
+            .with("connector.class", "io.debezium.connector.postgresql.PostgresConnector")
+            .with("offset.storage", "org.apache.kafka.connect.storage.KafkaOffsetBackingStore")
+            .with("offset.storage.topic", "debezium-offset")
+            .with("offset.storage.partitions", "1")
+            .with("offset.storage.replication.factor", "1")
+            .with("bootstrap.servers", "http://localhost:29092")
+            .with("offset.commit.policy", "io.debezium.engine.spi.OffsetCommitPolicy$PeriodicCommitOffsetPolicy")
+            .with("offset.flush.interval.ms", 60000)
+            .with("offset.flush.timeout.ms", 5000)
+            .with("internal.key.converter", "org.apache.kafka.connect.json.JsonConverter")
+            .with("internal.value.converter", "org.apache.kafka.connect.json.JsonConverter")
+            .with("database.dbname", uri.getPath().split("/")[1])
+            .with("database.server.name", uri.getHost() + "-" + uri.getPath().split("/")[1])
             .with("database.hostname", uri.getHost())
             .with("database.port", uri.getPort())
             .with("database.user", dataSource.getUsername())
             .with("database.password", dataSource.getPassword())
-            .with("database.dbname", "test")
             .with("plugin.name", "pgoutput")
-            .with("table.whitelist", "public.orders_outbox")
+            .with("table.include.list", "public.orders_outbox")
             .build();
     }
 }
