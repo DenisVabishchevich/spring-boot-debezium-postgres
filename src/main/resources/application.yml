@@ -1,0 +1,21 @@
+spring:
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:29092
+      group-id: orders
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: localhost:29092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:postgresql://localhost:5432/test
+    username: root
+    password: root
+    driverClassName: org.postgresql.Driver

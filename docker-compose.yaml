@@ -1,0 +1,88 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5432:5432"
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+      - "-c"
+      - "max_wal_senders=4"
+      - "-c"
+      - "max_replication_slots=4"
+      - "-c"
+      - "shared_preload_libraries=pgoutput"
+      - "-c"
+      - "listen_addresses=*"
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "22181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: '1'
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: '1'
+      KAFKA_MIN_INSYNC_REPLICAS: '1'
+
+  init-kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      sleep 15 && kafka-topics --bootstrap-server kafka:9092 --list
+      
+      echo -e 'Creating kafka topics'
+      kafka-topics --create --topic orders-in --bootstrap-server kafka:9092
+      kafka-topics --create --topic orders-out --bootstrap-server kafka:9092
+      
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka:9092 --list
+      "
+
+  send-kafka:
+    image: confluentinc/cp-kafkacat
+    depends_on:
+      - init-kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      echo '{\"status\":\"VALIDATED\"}' | kafkacat -P -b kafka:9092 -H id=$$(uuidgen) -H "type=CREATE_ORDER" -t orders-in -P
+      "
+  recieve-kafka:
+    image: confluentinc/cp-kafkacat
+    depends_on:
+      - init-kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      kafkacat -b localhost:9092 -t orders-out -C -c1
+      "
+
+volumes:
+  db:
+    driver: local
