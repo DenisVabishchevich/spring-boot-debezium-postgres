@@ -8,6 +8,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Set up test invironment
+        run: docker-compose up -d
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
@@ -18,4 +20,6 @@ jobs:
       - name: Build with Gradle
         uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
         with:
-          arguments: build
+          arguments: clean build
+      - name: Shut down test invironment
+        run: docker-compose down
