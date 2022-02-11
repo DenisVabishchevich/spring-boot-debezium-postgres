@@ -3,7 +3,7 @@
 # create topics
 docker run --network kafka-postgres confluentinc/cp-kafka kafka-topics --create --if-not-exists --topic orders-in --bootstrap-server kafka:9092
 docker run --network kafka-postgres confluentinc/cp-kafka kafka-topics --create --if-not-exists --topic orders-out --bootstrap-server kafka:9092
-docker run --network kafka-postgres confluentinc/cp-kafka kafka-topics --create --if-not-exists --topic debezium-offset --bootstrap-server kafka:9092 --config cleanup.policy=compact
+docker run --network kafka-postgres confluentinc/cp-kafka kafka-topics --create --if-not-exists --topic debezium-offset --bootstrap-server kafka:9092 --config 'cleanup.policy=compact'
 
 # send message with headers
 docker run -it --network kafka-postgres confluentinc/cp-kafkacat /bin/bash -c \

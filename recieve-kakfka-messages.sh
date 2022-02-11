@@ -1,0 +1,1 @@
+docker run --network kafka-postgres confluentinc/cp-kafka kafka-console-consumer --bootstrap-server kafka:9092 --topic orders-out --from-beginning
