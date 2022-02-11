@@ -27,7 +27,7 @@ jobs:
           generate-branches-badge: true
           jacoco-csv-file: build/reports/jacoco/test/jacocoTestReport.csv
       - name: Commit and push coverage badges
-        if: ${{ github.ref == 'master' }}
+        if: ${{ github.head_ref != 'pull_request' }}
         run: |
           cd .github/badges
           if [[ `git status --porcelain *.svg` ]]; then
