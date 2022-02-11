@@ -1,6 +1,5 @@
-![Coverage](.github/badges/jacoco.svg)
-![Branches](.github/badges/branches.svg)
-![example branch parameter](https://github.com/github/docs/actions/workflows/build.yml/badge.svg?branch=master)
+![coverage](.github/badges/jacoco.svg)
+![branches coverage](.github/badges/branches.svg)
 
 ## Transaction outbox pattern implementation
 
