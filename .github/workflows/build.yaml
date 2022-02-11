@@ -20,6 +20,11 @@ jobs:
       - name: Build with Gradle
         uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
         with:
-          arguments: clean build
+          arguments: clean build codeCoverageReport
+      - name: Generate JaCoCo Badge
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          generate-branches-badge: true
+          jacoco-csv-file: build/reports/jacoco/codeCoverageReport/codeCoverageReport.csv
       - name: Shut down test invironment
         run: docker-compose down

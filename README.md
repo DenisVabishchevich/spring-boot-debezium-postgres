@@ -5,7 +5,7 @@
 1. Java 17
 2. Docker
 
-### How to build
+### How to build and test
 
 1. `docker-compose up -d`
 2. `./gradlew clean build`

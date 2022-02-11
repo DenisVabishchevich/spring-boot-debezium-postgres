@@ -32,7 +32,7 @@ public class DebeziumListener implements Consumer<RecordChangeEvent<SourceRecord
     @Override
     @SneakyThrows
     public void accept(RecordChangeEvent<SourceRecord> changeEvent) {
-        log.info("EVENT CONSUMED");
+        log.info("transaction log message received");
 
         SourceRecord sourceRecord = changeEvent.record();
         Struct sourceRecordChangeValue = (Struct) sourceRecord.value();
@@ -40,9 +40,8 @@ public class DebeziumListener implements Consumer<RecordChangeEvent<SourceRecord
         if (sourceRecordChangeValue != null) {
             Envelope.Operation operation = Envelope.Operation.forCode((String) sourceRecordChangeValue.get(OPERATION));
 
-            if (operation != Envelope.Operation.READ) {
-                String record = operation == Envelope.Operation.DELETE ? BEFORE : AFTER;
-                Struct struct = (Struct) sourceRecordChangeValue.get(record);
+            if (operation == Envelope.Operation.CREATE) {
+                Struct struct = (Struct) sourceRecordChangeValue.get(AFTER);
                 Map<String, Object> payload = struct.schema().fields().stream()
                     .map(Field::name)
                     .filter(fieldName -> struct.get(fieldName) != null)
