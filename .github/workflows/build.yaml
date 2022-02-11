@@ -45,6 +45,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: jacoco-report
-          path: target/site/jacoco/
+          path: build/jacoco
       - name: Shut down test invironment
         run: docker-compose down
