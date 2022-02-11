@@ -1,6 +1,6 @@
 ![coverage](.github/badges/jacoco.svg)
 ![branches coverage](.github/badges/branches.svg)
-
+![pipeline status](https://github.com/DenisVabishchevich/spring-boot-debezium-postgres-kafka/actions/workflows/build.yaml/badge.svg)
 ## Transaction outbox pattern implementation
 
 ### Prerequisites
