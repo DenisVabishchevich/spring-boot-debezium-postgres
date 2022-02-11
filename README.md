@@ -1,3 +1,6 @@
+![Coverage](.github/badges/jacoco.svg)
+![Branches](.github/badges/branches.svg)
+
 ## Transaction outbox pattern implementation
 
 ### Prerequisites
