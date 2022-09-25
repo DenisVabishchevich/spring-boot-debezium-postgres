@@ -1,8 +1,8 @@
 plugins {
-	id 'org.springframework.boot' version '3.0.0-SNAPSHOT'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
-	id 'jacoco'
+    id 'org.springframework.boot' version '3.0.0-SNAPSHOT'
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+    id 'java'
+    id 'jacoco'
 }
 
 group = 'com.dv'
@@ -10,40 +10,40 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
-	mavenCentral()
-	maven { url 'https://repo.spring.io/milestone' }
-	maven { url 'https://repo.spring.io/snapshot' }
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/snapshot' }
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.flywaydb:flyway-core'
-	implementation 'org.springframework.kafka:spring-kafka'
-	implementation 'org.modelmapper:modelmapper:3.0.0'
-	implementation('io.debezium:debezium-embedded:1.8.0.Final') {
-		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-	}
-	implementation 'io.debezium:debezium-connector-postgres:1.8.0.Final'
-	implementation 'io.debezium:debezium-api:1.8.0.Final'
-	implementation 'org.apache.commons:commons-lang3'
-	runtimeOnly 'org.postgresql:postgresql'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.modelmapper:modelmapper:3.0.0'
+    implementation('io.debezium:debezium-embedded:1.8.0.Final') {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    }
+    implementation 'io.debezium:debezium-connector-postgres:1.8.0.Final'
+    implementation 'io.debezium:debezium-api:1.8.0.Final'
+    implementation 'org.apache.commons:commons-lang3'
+    runtimeOnly 'org.postgresql:postgresql'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 test {
-	finalizedBy jacocoTestReport // report is always generated after tests run
+    finalizedBy jacocoTestReport // report is always generated after tests run
 }
 jacocoTestReport {
-	dependsOn test // tests are required to run before generating the report
-	reports {
-		xml.required = false
-		csv.required = true
-		html.required = true
-	}
+    dependsOn test // tests are required to run before generating the report
+    reports {
+        xml.required = false
+        csv.required = true
+        html.required = true
+    }
 }
