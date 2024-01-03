@@ -4,11 +4,4 @@ attributes:
     instanceType: regular
     editor:
       type: Idea
-components:
-  - name: openjdk-container
-    container:
-      # image from Docker Hub
-      image: openjdk:17
-  - name: git
-    container:
-      image: alpine/git
+
