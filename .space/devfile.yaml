@@ -9,3 +9,6 @@ components:
     container:
       # image from Docker Hub
       image: openjdk:17
+  - name: git
+    container:
+      image: alpine/git
